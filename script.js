@@ -1,8 +1,10 @@
 const canvasContainer = document.getElementById('canvas-container');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
+
+let scale = Math.min(canvasContainer.clientWidth / 1920, canvasContainer.clientHeight / 1080);
+canvas.style.transform = `scale(${scale})`;
+canvas.style.transformOrigin = 'top left';
 
 let activeElement = null;
 let offsetX, offsetY;
@@ -46,6 +48,8 @@ function createTextElement(text, fontSize, fontColor) {
     div.style.left = '50px';
     div.style.top = '50px';
     div.style.cursor = 'move';
+    div.style.transform = `scale(${1 / scale})`;
+    div.style.transformOrigin = 'top left';
     div.addEventListener('click', () => setActiveElement(div));
     makeDraggable(div);
     makeResizable(div);
@@ -65,6 +69,8 @@ function createImageElement(imageUrl) {
     div.style.width = '100px';
     div.style.height = '100px';
     div.style.cursor = 'move';
+    div.style.transform = `scale(${1 / scale})`;
+    div.style.transformOrigin = 'top left';
     div.appendChild(img);
     div.addEventListener('click', () => setActiveElement(div));
     makeDraggable(div);
@@ -83,8 +89,8 @@ function setActiveElement(element) {
 function makeDraggable(element) {
     element.addEventListener('mousedown', (e) => {
         activeElement = element;
-        offsetX = e.clientX - element.offsetLeft;
-        offsetY = e.clientY - element.offsetTop;
+        offsetX = (e.clientX - element.offsetLeft) / scale;
+        offsetY = (e.clientY - element.offsetTop) / scale;
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
     });
@@ -92,10 +98,10 @@ function makeDraggable(element) {
 
 function onMouseMove(e) {
     if (activeElement) {
-        const left = e.clientX - offsetX;
-        const top = e.clientY - offsetY;
-        const rightBound = canvasContainer.clientWidth - activeElement.offsetWidth;
-        const bottomBound = canvasContainer.clientHeight - activeElement.offsetHeight;
+        const left = (e.clientX / scale) - offsetX;
+        const top = (e.clientY / scale) - offsetY;
+        const rightBound = (canvasContainer.clientWidth / scale) - activeElement.offsetWidth;
+        const bottomBound = (canvasContainer.clientHeight / scale) - activeElement.offsetHeight;
 
         activeElement.style.left = `${Math.min(Math.max(0, left), rightBound)}px`;
         activeElement.style.top = `${Math.min(Math.max(0, top), bottomBound)}px`;
@@ -122,10 +128,10 @@ function makeResizable(element) {
 
 function resizeElement(e) {
     if (activeElement) {
-        const newWidth = e.clientX - activeElement.offsetLeft;
-        const newHeight = e.clientY - activeElement.offsetTop;
-        const maxWidth = canvasContainer.clientWidth - activeElement.offsetLeft;
-        const maxHeight = canvasContainer.clientHeight - activeElement.offsetTop;
+        const newWidth = (e.clientX / scale) - activeElement.offsetLeft;
+        const newHeight = (e.clientY / scale) - activeElement.offsetTop;
+        const maxWidth = (canvasContainer.clientWidth / scale) - activeElement.offsetLeft;
+        const maxHeight = (canvasContainer.clientHeight / scale) - activeElement.offsetTop;
 
         activeElement.style.width = `${Math.min(newWidth, maxWidth)}px`;
         activeElement.style.height = `${Math.min(newHeight, maxHeight)}px`;

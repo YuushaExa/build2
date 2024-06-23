@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Web Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="toolbar">
+        <button id="add-text">Add Text</button>
+        <button id="add-image">Add Image</button>
+        <button id="delete-element">Delete Selected Element</button>
+        <div id="text-controls">
+            <label for="font-size">Font Size:</label>
+            <input type="number" id="font-size" value="20">
+            <label for="font-color">Font Color:</label>
+            <input type="color" id="font-color" value="#000000">
+        </div>
+    </div>
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

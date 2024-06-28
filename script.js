@@ -7,6 +7,15 @@ const fabricCanvas = new fabric.Canvas('c', {
   height: 1000
 });
 
+// Initial zoom display
+const zoomDisplay = document.getElementById('zoom-percentage');
+updateZoomDisplay();
+
+function updateZoomDisplay() {
+  let zoom = fabricCanvas.getZoom();
+  zoomDisplay.innerText = `${Math.round(zoom * 100)}%`;
+}
+
 // Adjust canvas size on window resize
 window.addEventListener('resize', () => {
   fabricCanvas.setWidth(canvasBackground.clientWidth);
@@ -59,8 +68,6 @@ document.getElementById('toggle-panning').addEventListener('click', () => {
 });
 
 // Zoom functionality
-const zoomDisplay = document.getElementById('zoom-percentage');
-
 canvasContainer.addEventListener('wheel', (opt) => {
   let zoom = fabricCanvas.getZoom();
   zoom *= 0.999 ** opt.deltaY;
@@ -74,14 +81,14 @@ canvasContainer.addEventListener('wheel', (opt) => {
 document.getElementById('zoom-in').addEventListener('click', () => {
   let zoom = fabricCanvas.getZoom();
   zoom = Math.min(zoom * 1.1, 10);
-  fabricCanvas.setZoom(zoom);
+  fabricCanvas.zoomToPoint({ x: fabricCanvas.width / 2, y: fabricCanvas.height / 2 }, zoom);
   updateZoomDisplay();
 });
 
 document.getElementById('zoom-out').addEventListener('click', () => {
   let zoom = fabricCanvas.getZoom();
   zoom = Math.max(zoom * 0.9, 0.1);
-  fabricCanvas.setZoom(zoom);
+  fabricCanvas.zoomToPoint({ x: fabricCanvas.width / 2, y: fabricCanvas.height / 2 }, zoom);
   updateZoomDisplay();
 });
 
@@ -102,11 +109,3 @@ document.getElementById('create-circle').addEventListener('click', () => {
   });
   fabricCanvas.add(circle);
 });
-
-function updateZoomDisplay() {
-  let zoom = fabricCanvas.getZoom();
-  zoomDisplay.innerText = `${Math.round(zoom * 100)}%`;
-}
-
-// Initial zoom display
-updateZoomDisplay();

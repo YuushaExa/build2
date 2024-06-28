@@ -12,6 +12,15 @@
       width: 100vw;
       height: 100vh;
       position: relative;
+      background: gray;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #canvas-background {
+      background: white;
+      width: 1000px;
+      height: 1000px;
     }
     #toolbar {
       position: absolute;
@@ -44,10 +53,13 @@
     <button id="zoom-in">Zoom In</button>
     <button id="zoom-out">Zoom Out</button>
     <button id="reset-zoom">Reset Zoom</button>
+    <button id="create-circle">Create Circle</button>
     <span id="zoom-percentage">100%</span>
   </div>
   <div id="canvas-container">
-    <canvas id="c"></canvas>
+    <div id="canvas-background">
+      <canvas id="c"></canvas>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>

@@ -1,5 +1,12 @@
 // script.js
 
+document.getElementById('load-url').addEventListener('click', function() {
+    const url = document.getElementById('url-input').value;
+    if (url) {
+        document.getElementById('web-frame').src = url;
+    }
+});
+
 const canvas = new fabric.Canvas('canvas');
 canvas.setWidth(window.innerWidth);
 canvas.setHeight(window.innerHeight - 50);
@@ -48,32 +55,37 @@ function createInputField(target) {
         inputDiv.style.left = `${e.target.left}px`;
         inputDiv.style.top = `${e.target.top - 30}px`;
     });
+
+    canvas.on('object:scaling', function(e) {
+        inputDiv.style.left = `${e.target.left}px`;
+        inputDiv.style.top = `${e.target.top - 30}px`;
+    });
 }
 
 function convertToIframe(target, url) {
     const iframe = document.createElement('iframe');
     iframe.src = url;
-    iframe.style.width = `${target.width * target.scaleX}px`;
-    iframe.style.height = `${target.height * target.scaleY}px`;
-    iframe.style.border = 'none';
     iframe.style.position = 'absolute';
     iframe.style.left = `${target.left}px`;
     iframe.style.top = `${target.top}px`;
-    iframe.style.pointerEvents = 'none'; // Prevent iframe from being interactive
+    iframe.style.width = `${target.width * target.scaleX}px`;
+    iframe.style.height = `${target.height * target.scaleY}px`;
+    iframe.style.border = 'none';
 
     document.body.appendChild(iframe);
 
-    canvas.remove(target);
+    // Update iframe position and size on object move/scale
+    canvas.on('object:moving', function(e) {
+        if (e.target === target) {
+            iframe.style.left = `${e.target.left}px`;
+            iframe.style.top = `${e.target.top}px`;
+        }
+    });
 
-    fabric.util.addListener(iframe, 'load', function() {
-        canvas.add(new fabric.Image(iframe, {
-            left: target.left,
-            top: target.top,
-            width: target.width,
-            height: target.height,
-            scaleX: target.scaleX,
-            scaleY: target.scaleY
-        }));
-        iframe.style.pointerEvents = 'auto'; // Allow iframe to be interactive after added to canvas
+    canvas.on('object:scaling', function(e) {
+        if (e.target === target) {
+            iframe.style.width = `${e.target.width * e.target.scaleX}px`;
+            iframe.style.height = `${e.target.height * e.target.scaleY}px`;
+        }
     });
 }

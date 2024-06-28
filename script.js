@@ -1,15 +1,16 @@
 const canvasContainer = document.getElementById('canvas-container');
+const canvasBackground = document.getElementById('canvas-background');
 const canvasElement = document.getElementById('c');
 const fabricCanvas = new fabric.Canvas('c', {
-  backgroundColor: '#f3f3f3',
-  width: canvasContainer.clientWidth,
-  height: canvasContainer.clientHeight
+  backgroundColor: 'white',
+  width: 1000,
+  height: 1000
 });
 
 // Adjust canvas size on window resize
 window.addEventListener('resize', () => {
-  fabricCanvas.setWidth(canvasContainer.clientWidth);
-  fabricCanvas.setHeight(canvasContainer.clientHeight);
+  fabricCanvas.setWidth(canvasBackground.clientWidth);
+  fabricCanvas.setHeight(canvasBackground.clientHeight);
   fabricCanvas.renderAll();
 });
 
@@ -90,6 +91,16 @@ document.getElementById('reset-zoom').addEventListener('click', () => {
   fabricCanvas.viewportTransform[5] = 0;
   updateZoomDisplay();
   fabricCanvas.renderAll();
+});
+
+document.getElementById('create-circle').addEventListener('click', () => {
+  const circle = new fabric.Circle({
+    radius: 50,
+    fill: 'red',
+    left: fabricCanvas.width / 2,
+    top: fabricCanvas.height / 2
+  });
+  fabricCanvas.add(circle);
 });
 
 function updateZoomDisplay() {

@@ -1,66 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Infinity Canvas with Fabric.js</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/460/fabric.min.js"></script>
-  <style>
-    body, html {
-      margin: 0;
-      overflow: hidden;
-    }
-    #canvas-container {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-      background: gray;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #canvas-background {
-      background: white;
-      width: 1000px;
-      height: 1000px;
-    }
-    #toolbar {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 10px;
-      border-radius: 5px;
-    }
-    button {
-      margin: 5px;
-      padding: 10px;
-      border: none;
-      background: #007BFF;
-      color: white;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #A0A0A0;
-    }
-    #zoom-percentage {
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabric.js Canvas with Iframe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/460/fabric.min.js"></script>
 </head>
 <body>
-  <div id="toolbar">
-    <button id="toggle-panning">Toggle Panning</button>
-    <button id="zoom-in">Zoom In</button>
-    <button id="zoom-out">Zoom Out</button>
-    <button id="reset-zoom">Reset Zoom</button>
-    <button id="create-circle">Create Circle</button>
-    <span id="zoom-percentage">100%</span>
-  </div>
-  <div id="canvas-container">
-    <div id="canvas-background">
-      <canvas id="c"></canvas>
+    <div id="toolbar">
+        <button id="create-square">Create Square</button>
     </div>
-  </div>
-  <script src="script.js"></script>
+    <canvas id="canvas"></canvas>
+    <script src="script.js"></script>
 </body>
 </html>

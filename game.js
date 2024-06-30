@@ -1,5 +1,6 @@
 let gold = 0;
-let specialPoints = 0;
+let prestigePoints = 0;
+let levelBonuses = 0;
 
 const mines = [
     { name: 'Coal Mine', level: 0, miners: 0, automation: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
@@ -10,13 +11,15 @@ const mines = [
 ];
 
 const goldDisplay = document.getElementById('gold');
-const specialPointsDisplay = document.getElementById('specialPoints');
+const prestigePointsDisplay = document.getElementById('prestigePoints');
+const levelBonusesDisplay = document.getElementById('levelBonuses');
 const minesContainer = document.getElementById('mines');
 const prestigeButton = document.getElementById('prestigeButton');
 
 function updateDisplay() {
     goldDisplay.textContent = gold;
-    specialPointsDisplay.textContent = specialPoints;
+    prestigePointsDisplay.textContent = prestigePoints;
+    levelBonusesDisplay.textContent = levelBonuses;
     minesContainer.innerHTML = '';
     
     mines.forEach((mine, index) => {
@@ -86,7 +89,7 @@ function levelUpMine(mineIndex) {
     if (gold >= mine.levelUpCost) {
         gold -= mine.levelUpCost;
         mine.level += 1;
-        specialPoints += 1;
+        levelBonuses += 1;
 
         if (mine.level % 10 === 0) {
             mine.minerEfficiency *= 5;
@@ -105,7 +108,7 @@ function levelUpMine(mineIndex) {
 }
 
 function prestige() {
-    specialPoints += Math.floor(gold / 100);
+    prestigePoints += Math.floor(gold / 100);
     gold = 0;
     mines.forEach(mine => {
         mine.level = 0;

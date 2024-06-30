@@ -4,10 +4,10 @@ let levelBonuses = 0;
 
 const mines = [
     { name: 'Coal Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: true, minersRequired: 1000 },
-    { name: 'Iron Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000, minersRequired: 1000 },
-    { name: 'Gold Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 10000000, minersRequired: 1000 },
-    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 100000000, minersRequired: 1000 },
-    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000000, minersRequired: 1000 }
+    { name: 'Iron Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 100000, minersRequired: 1000 },
+    { name: 'Gold Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000, minersRequired: 1000 },
+    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 10000000, minersRequired: 1000 },
+    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 100000000, minersRequired: 1000 }
 ];
 
 const goldDisplay = document.getElementById('gold');

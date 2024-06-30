@@ -1,84 +1,123 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('create-square').addEventListener('click', function() {
-        const square = new fabric.Rect({
-            left: 50,
-            top: 50,
-            width: 100,
-            height: 100,
-            fill: 'red'
-        });
+let gold = 0;
+let miners = 0;
+let minerCost = 10;
+let upgradeCost = 50;
+let automationCost = 100;
+let goldPerClick = 1;
+let minerEfficiency = 1;
+let isAutomated = false;
+let specialPoints = 0;
+let mineLevel = 1;
+let levelUpCost = 10;
 
-        canvas.add(square);
-        canvas.setActiveObject(square);
+const goldDisplay = document.getElementById('gold');
+const minersDisplay = document.getElementById('miners');
+const gpsDisplay = document.getElementById('gps');
+const specialPointsDisplay = document.getElementById('specialPoints');
+const mineLevelDisplay = document.getElementById('mineLevel');
+const mineButton = document.getElementById('mineButton');
+const buyMinerButton = document.getElementById('buyMinerButton');
+const upgradeButton = document.getElementById('upgradeButton');
+const automationButton = document.getElementById('automationButton');
+const levelUpButton = document.getElementById('levelUpButton');
+const prestigeButton = document.getElementById('prestigeButton');
+const minerCostDisplay = document.getElementById('minerCost');
+const upgradeCostDisplay = document.getElementById('upgradeCost');
+const automationCostDisplay = document.getElementById('automationCost');
+const levelUpCostDisplay = document.getElementById('levelUpCost');
 
-        createInputField(square);
-    });
+function updateDisplay() {
+    goldDisplay.textContent = gold;
+    minersDisplay.textContent = miners;
+    gpsDisplay.textContent = miners * minerEfficiency;
+    minerCostDisplay.textContent = minerCost;
+    upgradeCostDisplay.textContent = upgradeCost;
+    automationCostDisplay.textContent = automationCost;
+    specialPointsDisplay.textContent = specialPoints;
+    mineLevelDisplay.textContent = mineLevel;
+    levelUpCostDisplay.textContent = levelUpCost;
+    automationButton.disabled = isAutomated;
+}
 
-    const canvas = new fabric.Canvas('canvas');
-    canvas.setWidth(window.innerWidth);
-    canvas.setHeight(window.innerHeight - 50);
+function mineGold() {
+    gold += goldPerClick;
+    updateDisplay();
+}
 
-    function createInputField(target) {
-        const inputDiv = document.createElement('div');
-        inputDiv.style.position = 'absolute';
-        inputDiv.style.left = `${target.left}px`;
-        inputDiv.style.top = `${target.top - 30}px`;
-
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = 'Enter URL';
-        inputDiv.appendChild(input);
-
-        const button = document.createElement('button');
-        button.innerText = 'OK';
-        inputDiv.appendChild(button);
-
-        document.body.appendChild(inputDiv);
-
-        button.addEventListener('click', function() {
-            const url = input.value;
-            if (url) {
-                convertToIframe(target, url);
-                document.body.removeChild(inputDiv);
-            }
-        });
-
-        canvas.on('object:moving', function(e) {
-            inputDiv.style.left = `${e.target.left}px`;
-            inputDiv.style.top = `${e.target.top - 30}px`;
-        });
-
-        canvas.on('object:scaling', function(e) {
-            inputDiv.style.left = `${e.target.left}px`;
-            inputDiv.style.top = `${e.target.top - 30}px`;
-        });
+function hireMiner() {
+    if (gold >= minerCost) {
+        gold -= minerCost;
+        miners += 1;
+        minerCost = Math.floor(minerCost * 1.1);
+        updateDisplay();
     }
+}
 
-    function convertToIframe(target, url) {
-        const iframe = document.createElement('iframe');
-        iframe.src = url;
-        iframe.style.position = 'absolute';
-        iframe.style.left = `${target.left}px`;
-        iframe.style.top = `${target.top}px`;
-        iframe.style.width = `${target.width * target.scaleX}px`;
-        iframe.style.height = `${target.height * target.scaleY}px`;
-        iframe.style.border = 'none';
-
-        document.body.appendChild(iframe);
-
-        // Update iframe position and size on object move/scale
-        canvas.on('object:moving', function(e) {
-            if (e.target === target) {
-                iframe.style.left = `${e.target.left}px`;
-                iframe.style.top = `${e.target.top}px`;
-            }
-        });
-
-        canvas.on('object:scaling', function(e) {
-            if (e.target === target) {
-                iframe.style.width = `${e.target.width * e.target.scaleX}px`;
-                iframe.style.height = `${e.target.height * e.target.scaleY}px`;
-            }
-        });
+function upgradeEfficiency() {
+    if (gold >= upgradeCost) {
+        gold -= upgradeCost;
+        minerEfficiency += 1;
+        upgradeCost = Math.floor(upgradeCost * 1.5);
+        updateDisplay();
     }
-});
+}
+
+function buyAutomation() {
+    if (gold >= automationCost) {
+        gold -= automationCost;
+        isAutomated = true;
+        updateDisplay();
+    }
+}
+
+function generateGold() {
+    if (isAutomated) {
+        gold += miners * minerEfficiency;
+    }
+    updateDisplay();
+}
+
+function levelUpMine() {
+    if (gold >= levelUpCost) {
+        gold -= levelUpCost;
+        mineLevel += 1;
+        specialPoints += 1;
+
+        if (mineLevel % 10 === 0) {
+            minerEfficiency *= 5;
+        } else {
+            minerEfficiency *= 2;
+        }
+
+        if (mineLevel <= 5) {
+            levelUpCost = mineLevel * 10;
+        } else {
+            levelUpCost = 100 * (miners * minerEfficiency);
+        }
+
+        updateDisplay();
+    }
+}
+
+function prestige() {
+    specialPoints += Math.floor(gold / 100);
+    gold = 0;
+    miners = 0;
+    mineLevel = 1;
+    minerCost = 10;
+    upgradeCost = 50;
+    automationCost = 100;
+    minerEfficiency = 1;
+    isAutomated = false;
+    levelUpCost = 10;
+    updateDisplay();
+}
+
+mineButton.addEventListener('click', mineGold);
+buyMinerButton.addEventListener('click', hireMiner);
+upgradeButton.addEventListener('click', upgradeEfficiency);
+automationButton.addEventListener('click', buyAutomation);
+levelUpButton.addEventListener('click', levelUpMine);
+prestigeButton.addEventListener('click', prestige);
+
+setInterval(generateGold, 1000);

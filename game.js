@@ -33,6 +33,7 @@ function updateDisplay() {
                 <p>Gold per Second: ${mine.miners * mine.minerEfficiency}</p>
                 <button onclick="mineGold(${index})">Mine Gold</button>
                 <button onclick="hireMiner(${index})">Hire Miner (Cost: ${mine.minerCost} Gold)</button>
+                <button onclick="buyMaxMiners(${index})">Buy Max Miners</button>
                 <button onclick="upgradeEfficiency(${index})">Upgrade Efficiency (Cost: ${mine.upgradeCost} Gold)</button>
                 <button onclick="buyAutomation(${index})" ${mine.automationPurchased ? 'disabled' : ''}>Buy Automation (Cost: ${mine.automationCost} Gold)</button>
                 <button onclick="levelUpMine(${index})">Level Up Mine (Cost: ${mine.levelUpCost} Gold, Requires: ${mine.minersRequired} Miners)</button>
@@ -62,6 +63,17 @@ function hireMiner(mineIndex) {
         mine.minerCost = Math.floor(mine.minerCost * 1.1);
         updateDisplay();
     }
+}
+
+function buyMaxMiners(mineIndex) {
+    const mine = mines[mineIndex];
+    while (gold >= mine.minerCost) {
+        gold -= mine.minerCost;
+        mine.miners += 1;
+        mine.goldPerClick += 1;
+        mine.minerCost = Math.floor(mine.minerCost * 1.1);
+    }
+    updateDisplay();
 }
 
 function upgradeEfficiency(mineIndex) {

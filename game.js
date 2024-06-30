@@ -3,11 +3,11 @@ let prestigePoints = 0;
 let levelBonuses = 0;
 
 const mines = [
-    { name: 'Coal Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Iron Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Gold Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 }
+    { name: 'Coal Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: true, minersRequired: 1000 },
+    { name: 'Iron Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000, minersRequired: 1000 },
+    { name: 'Gold Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 10000000, minersRequired: 1000 },
+    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 100000000, minersRequired: 1000 },
+    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000000, minersRequired: 1000 }
 ];
 
 const goldDisplay = document.getElementById('gold');
@@ -24,18 +24,26 @@ function updateDisplay() {
     
     mines.forEach((mine, index) => {
         const mineDiv = document.createElement('div');
-        mineDiv.innerHTML = `
-            <h2>${mine.name}</h2>
-            <p>Level: ${mine.level}</p>
-            <p>Miners: ${mine.miners}</p>
-            <p>Gold per Click: ${mine.goldPerClick}</p>
-            <p>Gold per Second: ${mine.miners * mine.minerEfficiency}</p>
-            <button onclick="mineGold(${index})">Mine Gold</button>
-            <button onclick="hireMiner(${index})">Hire Miner (Cost: ${mine.minerCost} Gold)</button>
-            <button onclick="upgradeEfficiency(${index})">Upgrade Efficiency (Cost: ${mine.upgradeCost} Gold)</button>
-            <button onclick="buyAutomation(${index})" ${mine.automationPurchased ? 'disabled' : ''}>Buy Automation (Cost: ${mine.automationCost} Gold)</button>
-            <button onclick="levelUpMine(${index})">Level Up Mine (Cost: ${mine.levelUpCost} Gold)</button>
-        `;
+        if (mine.purchased) {
+            mineDiv.innerHTML = `
+                <h2>${mine.name}</h2>
+                <p>Level: ${mine.level}</p>
+                <p>Miners: ${mine.miners}</p>
+                <p>Gold per Click: ${mine.goldPerClick}</p>
+                <p>Gold per Second: ${mine.miners * mine.minerEfficiency}</p>
+                <button onclick="mineGold(${index})">Mine Gold</button>
+                <button onclick="hireMiner(${index})">Hire Miner (Cost: ${mine.minerCost} Gold)</button>
+                <button onclick="upgradeEfficiency(${index})">Upgrade Efficiency (Cost: ${mine.upgradeCost} Gold)</button>
+                <button onclick="buyAutomation(${index})" ${mine.automationPurchased ? 'disabled' : ''}>Buy Automation (Cost: ${mine.automationCost} Gold)</button>
+                <button onclick="levelUpMine(${index})">Level Up Mine (Cost: ${mine.levelUpCost} Gold, Requires: ${mine.minersRequired} Miners)</button>
+            `;
+        } else {
+            mineDiv.innerHTML = `
+                <h2>${mine.name}</h2>
+                <p>Cost: ${mine.cost} Gold</p>
+                <button onclick="buyMine(${index})">Buy Mine</button>
+            `;
+        }
         minesContainer.appendChild(mineDiv);
     });
 }
@@ -76,6 +84,15 @@ function buyAutomation(mineIndex) {
     }
 }
 
+function buyMine(mineIndex) {
+    const mine = mines[mineIndex];
+    if (gold >= mine.cost) {
+        gold -= mine.cost;
+        mine.purchased = true;
+        updateDisplay();
+    }
+}
+
 function generateGold() {
     mines.forEach(mine => {
         if (mine.automation) {
@@ -87,7 +104,7 @@ function generateGold() {
 
 function levelUpMine(mineIndex) {
     const mine = mines[mineIndex];
-    if (gold >= mine.levelUpCost) {
+    if (gold >= mine.levelUpCost && mine.miners >= mine.minersRequired) {
         gold -= mine.levelUpCost;
         mine.level += 1;
         levelBonuses += 1;
@@ -100,8 +117,13 @@ function levelUpMine(mineIndex) {
 
         if (mine.level <= 5) {
             mine.levelUpCost = mine.level * 10;
+            mine.minersRequired *= 3;
+        } else if (mine.level <= 10) {
+            mine.levelUpCost = 100 * (mine.miners * mine.minerEfficiency);
+            mine.minersRequired *= 5;
         } else {
             mine.levelUpCost = 100 * (mine.miners * mine.minerEfficiency);
+            mine.minersRequired *= 10;
         }
 
         updateDisplay();
@@ -122,6 +144,10 @@ function prestige() {
         mine.minerCost = 10;
         mine.upgradeCost = 50;
         mine.automationCost = 100;
+        mine.minersRequired = 1000;
+        if (mine.name !== 'Coal Mine') {
+            mine.purchased = false;
+        }
     });
     updateDisplay();
 }

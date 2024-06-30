@@ -3,11 +3,11 @@ let prestigePoints = 0;
 let levelBonuses = 0;
 
 const mines = [
-    { name: 'Coal Mine', level: 0, miners: 0, automation: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Iron Mine', level: 0, miners: 0, automation: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Gold Mine', level: 0, miners: 0, automation: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
-    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 }
+    { name: 'Coal Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
+    { name: 'Iron Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
+    { name: 'Gold Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
+    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 },
+    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100 }
 ];
 
 const goldDisplay = document.getElementById('gold');
@@ -33,7 +33,7 @@ function updateDisplay() {
             <button onclick="mineGold(${index})">Mine Gold</button>
             <button onclick="hireMiner(${index})">Hire Miner (Cost: ${mine.minerCost} Gold)</button>
             <button onclick="upgradeEfficiency(${index})">Upgrade Efficiency (Cost: ${mine.upgradeCost} Gold)</button>
-            <button onclick="buyAutomation(${index})">Buy Automation (Cost: ${mine.automationCost} Gold)</button>
+            <button onclick="buyAutomation(${index})" ${mine.automationPurchased ? 'disabled' : ''}>Buy Automation (Cost: ${mine.automationCost} Gold)</button>
             <button onclick="levelUpMine(${index})">Level Up Mine (Cost: ${mine.levelUpCost} Gold)</button>
         `;
         minesContainer.appendChild(mineDiv);
@@ -68,9 +68,10 @@ function upgradeEfficiency(mineIndex) {
 
 function buyAutomation(mineIndex) {
     const mine = mines[mineIndex];
-    if (gold >= mine.automationCost) {
+    if (gold >= mine.automationCost && !mine.automationPurchased) {
         gold -= mine.automationCost;
         mine.automation = true;
+        mine.automationPurchased = true;
         updateDisplay();
     }
 }
@@ -114,6 +115,7 @@ function prestige() {
         mine.level = 0;
         mine.miners = 0;
         mine.automation = false;
+        mine.automationPurchased = false;
         mine.goldPerClick = 1;
         mine.minerEfficiency = 1;
         mine.levelUpCost = 10;

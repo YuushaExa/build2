@@ -18,29 +18,27 @@ const bossImages = [
     'https://i.imgur.com/LZbTYUl.png', // Add more boss URLs
 ];
 
-const overlayBackgroundsWin = [
-    'https://i.imgur.com/overlay-win1.jpg', // Backgrounds for winning
-    'https://i.imgur.com/overlay-win2.jpg',
+const winOverlayBackgrounds = [
+    'https://i.imgur.com/8ncU2as.png', // Add overlay background URLs for win
+    'https://i.imgur.com/xTGRkMl.png',
 ];
-
-const overlayBackgroundsLost = [
-    'https://i.imgur.com/overlay-lost1.jpg', // Backgrounds for losing
-    'https://i.imgur.com/overlay-lost2.jpg',
-];
-
-const overlayTextsWin = [
+const winOverlayTexts = [
     'Congratulations on defeating the boss! Moving to the next level...',
     'You defeated the boss again! Keep going...',
 ];
-
-const overlayTextsLost = [
+const lossOverlayBackgrounds = [
+    'https://i.imgur.com/xTGRkMl.png', // Add overlay background URLs for loss
+    'https://i.imgur.com/8ncU2as.png',
+];
+const lossOverlayTexts = [
     'You lost! Restarting the level...',
-    'Try again! You can do it!',
+    'Try again! Restarting the level...',
 ];
 
 let currentBackgroundIndex = 0;
 let currentEnemyIndex = 0;
-let currentOverlayIndex = 0;
+let currentWinOverlayIndex = 0;
+let currentLossOverlayIndex = 0;
 
 let backgroundImage = new Image();
 backgroundImage.src = backgrounds[currentBackgroundIndex];
@@ -121,7 +119,7 @@ function updateEnemies() {
 
                 // Check for level completion
                 if (enemy.isBoss) {
-                    displayOverlayWin();
+                    displayOverlay('win');
                     setTimeout(() => {
                         level++;
                         enemyKillCount = 0;
@@ -134,7 +132,7 @@ function updateEnemies() {
             }
 
             if (character.hp <= 0) {
-                displayOverlayLost();
+                displayOverlay('loss');
                 setTimeout(() => {
                     resetCharacter();
                     updateDisplay();
@@ -185,21 +183,21 @@ function resetGame() {
     enemyKillCount = 0;
 }
 
-function displayOverlayWin() {
+function displayOverlay(type) {
     const overlay = document.getElementById('overlay');
     const overlayText = document.getElementById('overlay-text');
     const overlayBg = document.getElementById('overlay-bg');
-    overlayText.textContent = overlayTextsWin[currentOverlayIndex];
-    overlayBg.style.backgroundImage = `url(${overlayBackgroundsWin[currentBackgroundIndex]})`;
-    overlay.style.display = 'flex';
-}
+    
+    if (type === 'win') {
+        overlayText.textContent = winOverlayTexts[currentWinOverlayIndex];
+        overlayBg.style.backgroundImage = `url(${winOverlayBackgrounds[currentWinOverlayIndex]})`;
+        currentWinOverlayIndex = (currentWinOverlayIndex + 1) % winOverlayTexts.length;
+    } else if (type === 'loss') {
+        overlayText.textContent = lossOverlayTexts[currentLossOverlayIndex];
+        overlayBg.style.backgroundImage = `url(${lossOverlayBackgrounds[currentLossOverlayIndex]})`;
+        currentLossOverlayIndex = (currentLossOverlayIndex + 1) % lossOverlayTexts.length;
+    }
 
-function displayOverlayLost() {
-    const overlay = document.getElementById('overlay');
-    const overlayText = document.getElementById('overlay-text');
-    const overlayBg = document.getElementById('overlay-bg');
-    overlayText.textContent = overlayTextsLost[currentOverlayIndex];
-    overlayBg.style.backgroundImage = `url(${overlayBackgroundsLost[currentBackgroundIndex]})`;
     overlay.style.display = 'flex';
 }
 
@@ -221,7 +219,6 @@ function updateLevelAssets() {
         backgroundImage.src = backgrounds[currentBackgroundIndex];
         enemyImage.src = enemyImages[currentEnemyIndex];
         bossImage.src = bossImages[currentEnemyIndex];
-        currentOverlayIndex = (currentOverlayIndex + 1) % overlayTextsWin.length;
     }
 }
 

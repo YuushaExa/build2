@@ -6,7 +6,7 @@ canvas.height = 300;
 
 // Images for different levels
 const backgrounds = [
-    'https://i.imgur.com/8ncU2as.png',
+    'https://th.bing.com/th/id/OIG3.DDUZKigkf1.p3xKTvYSY?pid=ImgGn',
     'https://i.imgur.com/xTGRkMl.png', // Add more background URLs
 ];
 const enemyImages = [

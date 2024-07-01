@@ -5,13 +5,13 @@ canvas.width = window.innerWidth;
 canvas.height = 300;
 
 let backgroundImage = new Image();
-backgroundImage.src = 'https://i.imgur.com/8ncU2as.png'; // URL to a city background image
+backgroundImage.src = 'https://i.imgur.com/72svSkd.jpeg'; // URL to a city background image
 
 let characterImage = new Image();
-characterImage.src = 'https://i.imgur.com/o1A4mW1.png'; // URL to a character sprite
+characterImage.src = 'https://opengameart.org/sites/default/files/bullet_8.png'; // URL to a character sprite
 
 let enemyImage = new Image();
-enemyImage.src = 'https://i.imgur.com/uwFwDWo.png'; // URL to an enemy sprite
+enemyImage.src = 'https://opengameart.org/sites/default/files/bullet_8.png'; // URL to an enemy sprite
 
 let bgX = 0;
 const speed = 2;

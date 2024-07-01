@@ -4,10 +4,10 @@ let levelBonuses = 0;
 
 const mines = [
     { name: 'Coal Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: true, minersRequired: 1000 },
-    { name: 'Iron Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 100000, minersRequired: 1000 },
-    { name: 'Gold Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000, minersRequired: 1000 },
-    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 10000000, minersRequired: 1000 },
-    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 100000000, minersRequired: 1000 }
+    { name: 'Iron Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000, minersRequired: 1000 },
+    { name: 'Gold Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 10000000, minersRequired: 1000 },
+    { name: 'Diamond Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 100000000, minersRequired: 1000 },
+    { name: 'Platinum Mine', level: 0, miners: 0, automation: false, automationPurchased: false, goldPerClick: 1, minerEfficiency: 1, levelUpCost: 10, minerCost: 10, upgradeCost: 50, automationCost: 100, purchased: false, cost: 1000000000, minersRequired: 1000 }
 ];
 
 const goldDisplay = document.getElementById('gold');
@@ -96,48 +96,45 @@ function buyAutomation(mineIndex) {
     }
 }
 
+function levelUpMine(mineIndex) {
+    const mine = mines[mineIndex];
+    if (mine.miners >= mine.minersRequired && gold >= mine.levelUpCost) {
+        gold -= mine.levelUpCost;
+        mine.level += 1;
+        mine.goldPerClick *= 2;
+
+        if (mine.level % 10 === 0) {
+            mine.goldPerClick *= 5;
+        }
+
+        if (mine.level <= 5) {
+            mine.levelUpCost *= 10;
+            mine.minersRequired *= 3;
+        } else if (mine.level <= 10) {
+            mine.levelUpCost *= 100;
+            mine.minersRequired *= 5;
+        } else {
+            mine.levelUpCost *= 100;
+            mine.minersRequired *= 10;
+        }
+
+        levelBonuses += 1;
+        updateDisplay();
+    }
+}
+
 function buyMine(mineIndex) {
     const mine = mines[mineIndex];
     if (gold >= mine.cost) {
         gold -= mine.cost;
         mine.purchased = true;
-        updateDisplay();
-    }
-}
-
-function generateGold() {
-    mines.forEach(mine => {
-        if (mine.automation) {
-            gold += mine.miners * mine.minerEfficiency;
-        }
-    });
-    updateDisplay();
-}
-
-function levelUpMine(mineIndex) {
-    const mine = mines[mineIndex];
-    if (gold >= mine.levelUpCost && mine.miners >= mine.minersRequired) {
-        gold -= mine.levelUpCost;
-        mine.level += 1;
-        levelBonuses += 1;
-
-        if (mine.level % 10 === 0) {
-            mine.minerEfficiency *= 5;
-        } else {
-            mine.minerEfficiency *= 2;
-        }
-
-        if (mine.level <= 5) {
-            mine.levelUpCost = mine.level * 10;
-            mine.minersRequired *= 3;
-        } else if (mine.level <= 10) {
-            mine.levelUpCost = 100 * (mine.miners * mine.minerEfficiency);
-            mine.minersRequired *= 5;
-        } else {
-            mine.levelUpCost = 100 * (mine.miners * mine.minerEfficiency);
-            mine.minersRequired *= 10;
-        }
-
+        mine.goldPerClick = 1;
+        mine.minerEfficiency = 1;
+        mine.levelUpCost = 10;
+        mine.minerCost = 10;
+        mine.upgradeCost = 50;
+        mine.automationCost = 100;
+        mine.minersRequired = 1000;
         updateDisplay();
     }
 }
@@ -157,8 +154,17 @@ function prestige() {
         mine.upgradeCost = 50;
         mine.automationCost = 100;
         mine.minersRequired = 1000;
-        if (mine.name !== 'Coal Mine') {
-            mine.purchased = false;
+        if (!mine.purchased) {
+            mine.cost = mine.cost;
+        }
+    });
+    updateDisplay();
+}
+
+function automateMines() {
+    mines.forEach(mine => {
+        if (mine.automation) {
+            gold += mine.miners * mine.minerEfficiency;
         }
     });
     updateDisplay();
@@ -166,5 +172,8 @@ function prestige() {
 
 prestigeButton.addEventListener('click', prestige);
 
-setInterval(generateGold, 1000);
+// Automate mines every second
+setInterval(automateMines, 1000);
+
+// Initial display update
 updateDisplay();
